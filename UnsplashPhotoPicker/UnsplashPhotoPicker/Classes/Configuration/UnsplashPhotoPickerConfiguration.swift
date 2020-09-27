@@ -23,6 +23,8 @@ public struct UnsplashPhotoPickerConfiguration {
     /// Controls whether the picker allows multiple or single selection.
     public var allowsMultipleSelection = false
 
+    public var showCancelButton = true
+    
     /// The memory capacity used by the cache.
     public var memoryCapacity = defaultMemoryCapacity
 
