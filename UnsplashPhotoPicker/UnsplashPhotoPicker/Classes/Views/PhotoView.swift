@@ -34,7 +34,7 @@ class PhotoView: UIView {
         accessibilityIgnoresInvertColors = true
         gradientView.setColors([
             GradientView.Color(color: .clear, location: 0),
-            GradientView.Color(color: UIColor(white: 0, alpha: 0.5), location: 1)
+            GradientView.Color(color: UIColor(white: 0, alpha: 0.3 ), location: 1)
         ])
     }
 
