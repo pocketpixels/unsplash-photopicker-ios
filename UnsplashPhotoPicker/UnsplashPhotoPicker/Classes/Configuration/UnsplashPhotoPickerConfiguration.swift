@@ -24,7 +24,10 @@ public struct UnsplashPhotoPickerConfiguration {
     public var allowsMultipleSelection = false
 
     public var showCancelButton = true
-    
+
+    /// Whether to show the photographer's user names overlaid over the thumbnails
+    public var showUsernames: Bool = true
+
     /// The memory capacity used by the cache.
     public var memoryCapacity = defaultMemoryCapacity
 

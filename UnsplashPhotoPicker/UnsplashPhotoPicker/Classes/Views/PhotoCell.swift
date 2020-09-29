@@ -67,7 +67,7 @@ class PhotoCell: UICollectionViewCell {
     // MARK: - Setup
 
     func configure(with photo: UnsplashPhoto) {
-        photoView.configure(with: photo)
+        photoView.configure(with: photo, showsUsername: Configuration.shared.showUsernames)
     }
 
     private func setupPhotoView() {

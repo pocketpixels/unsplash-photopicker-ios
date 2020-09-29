@@ -94,7 +94,7 @@ class PhotoView: UIView {
             return nil
         }
 
-        photoView.configure(with: photo)
+        photoView.configure(with: photo, showsUsername: Configuration.shared.showUsernames)
 
         return photoView
     }
