@@ -18,7 +18,7 @@ class WaterfallLayout: UICollectionViewLayout {
 
     weak var delegate: WaterfallLayoutDelegate?
 
-    var topInset: CGFloat = 16 {
+    var topInset: CGFloat = 8 {
         didSet {
             invalidateLayout()
         }
@@ -37,7 +37,7 @@ class WaterfallLayout: UICollectionViewLayout {
         guard let collectionView = collectionView else { return 1 }
 
         let numberOfColumns = WaterfallLayout.numberOfColumns(for: collectionView.frame.width)
-        return min(numberOfColumns, 3)
+        return min(numberOfColumns, 5)
     }
 
     private var isSingleColumn: Bool {
@@ -45,7 +45,7 @@ class WaterfallLayout: UICollectionViewLayout {
     }
 
     private var itemSpacing: CGFloat {
-        return isSingleColumn ? 1 : 16
+        return isSingleColumn ? 1 : 8
     }
 
     private var columnWidth: CGFloat {
@@ -196,8 +196,8 @@ class WaterfallLayout: UICollectionViewLayout {
 
     // MARK: - Utilities
 
-    class func numberOfColumns(for width: CGFloat, itemSpacing: CGFloat = 16, minimumWidth: CGFloat = 150) -> Int {
-        return Int(floor(width - itemSpacing) / (minimumWidth + itemSpacing))
+    class func numberOfColumns(for width: CGFloat, itemSpacing: CGFloat = 8, minimumWidth: CGFloat = 150) -> Int {
+        return Int(floor(width + itemSpacing) / (minimumWidth + itemSpacing))
     }
 
     private func itemSize(from size: CGSize, with columnWidth: CGFloat) -> CGSize {
