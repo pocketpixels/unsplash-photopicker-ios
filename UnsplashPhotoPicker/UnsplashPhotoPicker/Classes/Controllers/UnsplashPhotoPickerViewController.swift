@@ -147,6 +147,10 @@ public class UnsplashPhotoPickerViewController: UIViewController {
             refresh()
         }
     }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        self.searchController.isActive = true
+    }
 
     override public func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -351,6 +355,9 @@ extension UnsplashPhotoPickerViewController: UISearchControllerDelegate {
         if let context = previewingContext {
             unregisterForPreviewing(withContext: context)
             previewingContext = searchController.registerForPreviewing(with: self, sourceView: collectionView)
+        }
+        DispatchQueue.main.async {
+            self.searchController.searchBar.becomeFirstResponder()
         }
     }
 
