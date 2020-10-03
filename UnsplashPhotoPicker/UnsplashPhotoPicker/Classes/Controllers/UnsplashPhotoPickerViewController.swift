@@ -380,7 +380,7 @@ extension UnsplashPhotoPickerViewController: UISearchBarDelegate {
 
 // MARK: - UIScrollViewDelegate
 extension UnsplashPhotoPickerViewController: UIScrollViewDelegate {
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         if searchController.searchBar.isFirstResponder {
             searchController.searchBar.resignFirstResponder()
         }
