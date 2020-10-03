@@ -12,6 +12,9 @@ class PhotoView: UIView {
 
     static var nib: UINib { return UINib(nibName: "PhotoView", bundle: Bundle(for: PhotoView.self)) }
 
+    static let userNameTappedNotification = Notification.Name("unsplashUserNameTapped")
+    static let userProfileUrlKey = "unsplashUserProfileURL"
+    
     private var photoModel: UnsplashPhoto?
     private var imageDownloader = ImageDownloader()
     private var screenScale: CGFloat { return UIScreen.main.scale }
@@ -96,7 +99,10 @@ class PhotoView: UIView {
     // MARK: - Tap callback
     
     @objc public func userNameTapped() {
-        print("\(photoModel?.user.profileURL)")
+        guard let profileURL = photoModel?.user.profileURL else { return }
+        NotificationCenter.default.post(name: Self.userNameTappedNotification, object: nil, userInfo: [
+            Self.userProfileUrlKey : profileURL
+        ])
     }
 
     // MARK: - Utility

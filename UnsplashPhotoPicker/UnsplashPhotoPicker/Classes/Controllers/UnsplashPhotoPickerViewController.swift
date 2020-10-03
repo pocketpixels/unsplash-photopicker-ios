@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 public protocol UnsplashPhotoPickerViewControllerDelegate: class {
     func unsplashPhotoPickerViewController(_ viewController: UnsplashPhotoPickerViewController, didSelectPhotos photos: [UnsplashPhoto])
@@ -167,6 +168,7 @@ public class UnsplashPhotoPickerViewController: UIViewController {
     private func setupNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowNotification(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideNotification(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userProfileRequestedNotification(_:)), name: PhotoView.userNameTappedNotification, object: nil)
     }
 
     private func setupNavigationBar() {
@@ -332,7 +334,16 @@ public class UnsplashPhotoPickerViewController: UIViewController {
             self?.collectionView.scrollIndicatorInsets = .zero
         }
     }
-
+    
+    @objc func userProfileRequestedNotification(_ notification: Notification) {
+        guard let userProfileURL = notification.userInfo?[PhotoView.userProfileUrlKey] as? URL else { return }
+        print("Received URL \(userProfileURL)")
+        let vc = SFSafariViewController(url: userProfileURL)
+        vc.delegate = self
+        vc.modalPresentationStyle = .pageSheet
+        present(vc, animated: true)
+    }
+    
 }
 
 // MARK: - UISearchControllerDelegate
@@ -376,6 +387,9 @@ extension UnsplashPhotoPickerViewController: UISearchBarDelegate {
         updateTitle()
         updateDoneButtonState()
     }
+}
+
+extension UnsplashPhotoPickerViewController: SFSafariViewControllerDelegate {
 }
 
 // MARK: - UIScrollViewDelegate
