@@ -337,7 +337,6 @@ public class UnsplashPhotoPickerViewController: UIViewController {
     
     @objc func userProfileRequestedNotification(_ notification: Notification) {
         guard let userProfileURL = notification.userInfo?[PhotoView.userProfileUrlKey] as? URL else { return }
-        print("Received URL \(userProfileURL)")
         let vc = SFSafariViewController(url: userProfileURL)
         vc.delegate = self
         vc.modalPresentationStyle = .pageSheet
