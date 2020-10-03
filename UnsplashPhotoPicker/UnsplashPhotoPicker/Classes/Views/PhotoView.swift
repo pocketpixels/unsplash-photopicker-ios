@@ -12,7 +12,7 @@ class PhotoView: UIView {
 
     static var nib: UINib { return UINib(nibName: "PhotoView", bundle: Bundle(for: PhotoView.self)) }
 
-    private var currentPhotoID: String?
+    private var photoModel: UnsplashPhoto?
     private var imageDownloader = ImageDownloader()
     private var screenScale: CGFloat { return UIScreen.main.scale }
 
@@ -36,10 +36,13 @@ class PhotoView: UIView {
             GradientView.Color(color: .clear, location: 0),
             GradientView.Color(color: UIColor(white: 0, alpha: 0.3 ), location: 1)
         ])
+        
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(userNameTapped))
+        userNameLabel.addGestureRecognizer(tapRecognizer)
     }
 
     func prepareForReuse() {
-        currentPhotoID = nil
+        photoModel = nil
         userNameLabel.text = nil
         imageView.backgroundColor = .clear
         imageView.image = nil
@@ -55,10 +58,10 @@ class PhotoView: UIView {
     // MARK: - Setup
 
     func configure(with photo: UnsplashPhoto, showsUsername: Bool = true) {
+        photoModel = photo
         self.showsUsername = showsUsername
         userNameLabel.text = photo.user.displayName
         imageView.backgroundColor = photo.color
-        currentPhotoID = photo.identifier
         downloadImage(with: photo)
     }
 
@@ -70,7 +73,7 @@ class PhotoView: UIView {
         let downloadPhotoID = photo.identifier
         
         imageDownloader.downloadPhoto(with: url, completion: { [weak self] (image, isCached) in
-            guard let strongSelf = self, strongSelf.currentPhotoID == downloadPhotoID else { return }
+            guard let strongSelf = self, strongSelf.photoModel?.identifier == downloadPhotoID else { return }
 
             if isCached {
                 strongSelf.imageView.image = image
@@ -88,6 +91,12 @@ class PhotoView: UIView {
             URLQueryItem(name: "w", value: "\(frame.width)"),
             URLQueryItem(name: "dpr", value: "\(Int(screenScale))"),
         ])
+    }
+    
+    // MARK: - Tap callback
+    
+    @objc public func userNameTapped() {
+        print("\(photoModel?.user.profileURL)")
     }
 
     // MARK: - Utility
