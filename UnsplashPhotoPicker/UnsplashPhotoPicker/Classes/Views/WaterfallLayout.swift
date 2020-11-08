@@ -35,9 +35,9 @@ class WaterfallLayout: UICollectionViewLayout {
 
     private var numberOfColumns: Int {
         guard let collectionView = collectionView else { return 1 }
-
-        let numberOfColumns = WaterfallLayout.numberOfColumns(for: collectionView.frame.width)
-        return min(numberOfColumns, 5)
+        let minWidth:CGFloat = (UIDevice.current.userInterfaceIdiom == .pad) ? 300.0 : 150.0
+        let numberOfColumns = WaterfallLayout.numberOfColumns(for: collectionView.frame.width, minimumWidth: minWidth)
+        return min(numberOfColumns, 4)
     }
 
     private var isSingleColumn: Bool {
