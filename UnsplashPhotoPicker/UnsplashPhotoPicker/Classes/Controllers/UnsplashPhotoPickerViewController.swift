@@ -36,7 +36,6 @@ public class UnsplashPhotoPickerViewController: UIViewController {
 
     private lazy var searchController: UISearchController = {
         let searchController = UnsplashSearchController(searchResultsController: nil)
-        searchController.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
@@ -99,7 +98,6 @@ public class UnsplashPhotoPickerViewController: UIViewController {
 
     private let editorialDataSource = PhotosDataSourceFactory.collection(identifier: Configuration.shared.editorialCollectionId).dataSource
 
-    private var previewingContext: UIViewControllerPreviewing?
     private var searchText: String?
 
     public weak var delegate: UnsplashPhotoPickerViewControllerDelegate?
@@ -134,7 +132,6 @@ public class UnsplashPhotoPickerViewController: UIViewController {
         setupSearchController()
         setupCollectionView()
         setupSpinner()
-        setupPeekAndPop()
 
         let trimmedQuery = Configuration.shared.query?.trimmingCharacters(in: .whitespacesAndNewlines)
         setSearchText(trimmedQuery)
@@ -215,10 +212,6 @@ public class UnsplashPhotoPickerViewController: UIViewController {
             spinner.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
             spinner.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor)
         ])
-    }
-
-    private func setupPeekAndPop() {
-        previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
     }
 
     private func showEmptyView(with state: EmptyViewState) {
@@ -338,7 +331,7 @@ public class UnsplashPhotoPickerViewController: UIViewController {
             self?.collectionView.scrollIndicatorInsets = .zero
         }
     }
-    
+
     @objc func userProfileRequestedNotification(_ notification: Notification) {
         guard let userProfileURL = notification.userInfo?[PhotoView.userProfileUrlKey] as? URL else { return }
         let vc = SFSafariViewController(url: userProfileURL)
@@ -352,19 +345,8 @@ public class UnsplashPhotoPickerViewController: UIViewController {
 // MARK: - UISearchControllerDelegate
 extension UnsplashPhotoPickerViewController: UISearchControllerDelegate {
     public func didPresentSearchController(_ searchController: UISearchController) {
-        if let context = previewingContext {
-            unregisterForPreviewing(withContext: context)
-            previewingContext = searchController.registerForPreviewing(with: self, sourceView: collectionView)
-        }
         DispatchQueue.main.async {
             self.searchController.searchBar.becomeFirstResponder()
-        }
-    }
-
-    public func didDismissSearchController(_ searchController: UISearchController) {
-        if let context = previewingContext {
-            searchController.unregisterForPreviewing(withContext: context)
-            previewingContext = registerForPreviewing(with: self, sourceView: collectionView)
         }
     }
 }
@@ -454,24 +436,5 @@ extension UnsplashPhotoPickerViewController: PagedDataSourceDelegate {
         DispatchQueue.main.async {
             self.showEmptyView(with: state)
         }
-    }
-}
-
-// MARK: - UIViewControllerPreviewingDelegate
-extension UnsplashPhotoPickerViewController: UIViewControllerPreviewingDelegate {
-    public func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-        guard let indexPath = collectionView.indexPathForItem(at: location),
-            let cellAttributes = collectionView.layoutAttributesForItem(at: indexPath),
-            let cell = collectionView.cellForItem(at: indexPath) as? PhotoCell,
-            let image = cell.photoView.imageView.image else {
-                return nil
-        }
-
-        previewingContext.sourceRect = cellAttributes.frame
-
-        return UnsplashPhotoPickerPreviewViewController(image: image)
-    }
-
-    public func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
     }
 }
