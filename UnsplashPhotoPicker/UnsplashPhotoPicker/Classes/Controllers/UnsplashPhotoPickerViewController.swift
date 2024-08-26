@@ -156,7 +156,7 @@ public class UnsplashPhotoPickerViewController: UIViewController {
         super.viewWillDisappear(animated)
 
         // Fix to avoid a retain issue
-        searchController.dismiss(animated: true, completion: nil)
+        searchController.dismiss(animated: false, completion: nil)
     }
 
     override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
