@@ -25,6 +25,10 @@ class ImageDownloader {
             guard let strongSelf = self else { return }
             strongSelf.imageDataTask = nil
 
+            if let error = error {
+                print("Error downloading thumbnail: \(error)")
+            }
+            
             guard let data = data, let response = response, let image = UIImage(data: data), error == nil else { return }
 
             let cachedResponse = CachedURLResponse(response: response, data: data)
