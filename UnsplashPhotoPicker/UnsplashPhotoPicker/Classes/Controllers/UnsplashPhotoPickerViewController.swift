@@ -36,6 +36,7 @@ public class UnsplashPhotoPickerViewController: UIViewController {
 
     private lazy var searchController: UISearchController = {
         let searchController = UnsplashSearchController(searchResultsController: nil)
+        searchController.delegate = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.delegate = self
@@ -146,6 +147,7 @@ public class UnsplashPhotoPickerViewController: UIViewController {
     }
     
     public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         self.searchController.isActive = true
     }
 

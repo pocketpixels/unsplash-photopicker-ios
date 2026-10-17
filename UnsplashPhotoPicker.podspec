@@ -7,6 +7,7 @@ Pod::Spec.new do |spec|
   spec.summary          = 'A photo picker to search for and use photos from Unsplash.'
   spec.source           = { :git => 'https://github.com/unsplash/unsplash-photopicker-ios.git', :tag => '1.1.1' }
   spec.source_files     = 'UnsplashPhotoPicker/UnsplashPhotoPicker/**/*.{h,m,swift,xib,strings,stringsdict}'
+  spec.resources        = 'UnsplashPhotoPicker/UnsplashPhotoPicker/Resources/Assets.xcassets'
   spec.framework        = 'Foundation', 'UIKit'
   spec.platform         = :ios, '11.0'
   spec.requires_arc     = true
