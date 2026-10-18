@@ -35,9 +35,13 @@ class WaterfallLayout: UICollectionViewLayout {
 
     private var numberOfColumns: Int {
         guard let collectionView = collectionView else { return 1 }
-        let minWidth:CGFloat = (UIDevice.current.userInterfaceIdiom == .pad) ? 300.0 : 150.0
-        let numberOfColumns = WaterfallLayout.numberOfColumns(for: collectionView.frame.width, minimumWidth: minWidth)
-        return min(numberOfColumns, 4)
+        // Wider grids get wider columns as well as more of them: phone widths get two columns and a full-width
+        // iPad window three or four.
+        let width = collectionView.frame.width
+        if width < 320 { return 1 }
+        if width < 740 { return 2 }
+        if width < 1210 { return 3 }
+        return 4
     }
 
     private var isSingleColumn: Bool {
@@ -46,6 +50,14 @@ class WaterfallLayout: UICollectionViewLayout {
 
     private var itemSpacing: CGFloat {
         return isSingleColumn ? 1 : 8
+    }
+
+    // A grid of several columns stays out of the horizontal safe area, and one of three or more columns also
+    // gets a margin on either side. A single column spans the full width.
+    private var horizontalInsets: (left: CGFloat, right: CGFloat) {
+        guard let collectionView = collectionView, !isSingleColumn else { return (0, 0) }
+        let margin: CGFloat = numberOfColumns >= 3 ? 8 : 0
+        return (collectionView.safeAreaInsets.left + margin, collectionView.safeAreaInsets.right + margin)
     }
 
     private var columnWidth: CGFloat {
@@ -68,10 +80,8 @@ class WaterfallLayout: UICollectionViewLayout {
             return CGSize.zero
         }
 
-        var width = collectionView.frame.width
-        if !isSingleColumn {
-            width -= (collectionView.layoutMargins.left + collectionView.layoutMargins.right)
-        }
+        let insets = horizontalInsets
+        let width = collectionView.frame.width - insets.left - insets.right
 
         return CGSize(width: width, height: contentHeight)
     }
@@ -136,12 +146,12 @@ class WaterfallLayout: UICollectionViewLayout {
 
         let itemSpacing = self.itemSpacing
         let numberOfColumns = self.numberOfColumns
-        let isSingleColumn = self.isSingleColumn
         let columnWidth = self.columnWidth
+        let leftInset = horizontalInsets.left
 
         var columnHeights = [CGFloat](repeating: topInset, count: numberOfColumns)
         func originForColumn(_ column: Int) -> CGPoint {
-            let pointX = isSingleColumn ? 0 : collectionView.layoutMargins.left + CGFloat(column) * (columnWidth + itemSpacing)
+            let pointX = leftInset + CGFloat(column) * (columnWidth + itemSpacing)
             let pointY = columnHeights[column]
             return CGPoint(x: pointX, y: pointY)
         }
@@ -195,10 +205,6 @@ class WaterfallLayout: UICollectionViewLayout {
     }
 
     // MARK: - Utilities
-
-    class func numberOfColumns(for width: CGFloat, itemSpacing: CGFloat = 8, minimumWidth: CGFloat = 150) -> Int {
-        return Int(floor(width + itemSpacing) / (minimumWidth + itemSpacing))
-    }
 
     private func itemSize(from size: CGSize, with columnWidth: CGFloat) -> CGSize {
         let height = size.height * columnWidth / size.width

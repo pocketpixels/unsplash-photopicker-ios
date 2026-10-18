@@ -55,12 +55,6 @@ public class UnsplashPhotoPickerViewController: UIViewController {
         collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: PhotoCell.reuseIdentifier)
         collectionView.register(PagingView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: PagingView.reuseIdentifier)
         collectionView.contentInsetAdjustmentBehavior = .automatic
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            collectionView.layoutMargins = UIEdgeInsets(top: 0.0, left: 8.0, bottom: 0.0, right: 8.0)
-        }
-        else {
-            collectionView.layoutMargins = UIEdgeInsets.zero
-        }
         collectionView.backgroundColor = UIColor.photoPicker.background
         collectionView.allowsMultipleSelection = Configuration.shared.allowsMultipleSelection
         return collectionView
